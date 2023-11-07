@@ -102,7 +102,7 @@ MaxTxLifetime = "3h"
 		StopSequencerOnBatchNum = 0
 		SequentialReprocessFullBatch = false
 	[Sequencer.DBManager]
-		PoolRetrievalInterval = "500ms"
+		PoolRetrievalInterval = "100ms"
 		L2ReorgRetrievalInterval = "5s"
 	[Sequencer.EffectiveGasPrice]
 		MaxBreakEvenGasPriceDeviationPercentage = 10

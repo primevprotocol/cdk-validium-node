@@ -931,7 +931,7 @@ func (s *State) StoreTransaction(ctx context.Context, batchNumber uint64, proces
 
 	// Create block to be able to calculate its hash
 	block := types.NewBlock(header, transactions, []*types.Header{}, receipts, &trie.StackTrie{})
-	block.ReceivedAt = time.Unix(int64(timestamp), 0)
+	block.ReceivedAt = time.UnixMilli(int64(timestamp))
 
 	receipt.BlockHash = block.Hash()
 
