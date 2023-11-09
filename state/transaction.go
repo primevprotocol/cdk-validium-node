@@ -954,11 +954,9 @@ func (s *State) StoreEmptyBlock(ctx context.Context, timestamp uint64, dbTx pgx.
 		GasLimit:   s.cfg.MaxCumulativeGasUsed,
 		Time:       timestamp,
 	}
-	receipt := &types.Receipt{}
-	receipts := []*types.Receipt{receipt}
+	receipts := []*types.Receipt{}
 	block := types.NewBlock(header, []*types.Transaction{}, []*types.Header{}, receipts, &trie.StackTrie{})
 	block.ReceivedAt = time.UnixMilli(int64(timestamp))
-	receipt.BlockHash = block.Hash()
 
 	batchNumber, err := s.GetLastBatchNumber(ctx, dbTx)
 	if err != nil {
