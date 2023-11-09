@@ -63,6 +63,7 @@ type stateInterface interface {
 	OpenBatch(ctx context.Context, processingContext state.ProcessingContext, dbTx pgx.Tx) error
 	GetLastNBatches(ctx context.Context, numBatches uint, dbTx pgx.Tx) ([]*state.Batch, error)
 	StoreTransaction(ctx context.Context, batchNumber uint64, processedTx *state.ProcessTransactionResponse, coinbase common.Address, timestamp uint64, dbTx pgx.Tx) error
+	StoreEmptyBlock(ctx context.Context, timestamp uint64, dbTx pgx.Tx) error
 	GetLastClosedBatch(ctx context.Context, dbTx pgx.Tx) (*state.Batch, error)
 	GetLastL2Block(ctx context.Context, dbTx pgx.Tx) (*types.Block, error)
 	GetLastBlock(ctx context.Context, dbTx pgx.Tx) (*state.Block, error)
@@ -127,6 +128,7 @@ type dbManagerInterface interface {
 	GetL1GasPrice() uint64
 	GetStoredFlushID(ctx context.Context) (uint64, string, error)
 	StoreProcessedTxAndDeleteFromPool(ctx context.Context, tx transactionToStore) error
+	StoreEmptyBlock(ctx context.Context) error
 	GetForcedBatch(ctx context.Context, forcedBatchNumber uint64, dbTx pgx.Tx) (*state.ForcedBatch, error)
 	GetForkIDByBatchNumber(batchNumber uint64) uint64
 }

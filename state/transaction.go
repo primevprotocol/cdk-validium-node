@@ -943,6 +943,34 @@ func (s *State) StoreTransaction(ctx context.Context, batchNumber uint64, proces
 	return nil
 }
 
+func (s *State) StoreEmptyBlock(ctx context.Context, timestamp uint64, dbTx pgx.Tx) error {
+	lastL2Block, err := s.GetLastL2Block(ctx, dbTx)
+	if err != nil {
+		return err
+	}
+	header := &types.Header{
+		Number:     new(big.Int).SetUint64(lastL2Block.Number().Uint64() + 1),
+		ParentHash: lastL2Block.Hash(),
+		GasLimit:   s.cfg.MaxCumulativeGasUsed,
+		Time:       timestamp,
+	}
+	receipt := &types.Receipt{}
+	receipts := []*types.Receipt{receipt}
+	block := types.NewBlock(header, []*types.Transaction{}, []*types.Header{}, receipts, &trie.StackTrie{})
+	block.ReceivedAt = time.UnixMilli(int64(timestamp))
+	receipt.BlockHash = block.Hash()
+
+	batchNumber, err := s.GetLastBatchNumber(ctx, dbTx)
+	if err != nil {
+		return err
+	}
+	// Store L2 block and its transaction
+	if err := s.AddL2Block(ctx, batchNumber, block, receipts, 0, dbTx); err != nil {
+		return err
+	}
+	return nil
+}
+
 // CheckSupersetBatchTransactions verifies that processedTransactions is a
 // superset of existingTxs and that the existing txs have the same order,
 // returns a non-nil error if that is not the case.

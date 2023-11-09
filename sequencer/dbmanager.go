@@ -215,6 +215,27 @@ func (d *dbManager) StoreProcessedTxAndDeleteFromPool(ctx context.Context, tx tr
 	return nil
 }
 
+// StoreEmptyBlock stores empty block into the state
+func (d *dbManager) StoreEmptyBlock(ctx context.Context) error {
+	d.checkIfReorg()
+
+	dbTx, err := d.BeginStateTransaction(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = d.state.StoreEmptyBlock(ctx, uint64(time.Now().UnixMilli()), dbTx)
+	if err != nil {
+		return err
+	}
+
+	err = dbTx.Commit(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetWIPBatch returns ready WIP batch
 func (d *dbManager) GetWIPBatch(ctx context.Context) (*WipBatch, error) {
 	const two = 2
