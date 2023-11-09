@@ -224,7 +224,7 @@ func (f *finalizer) storePendingTransactions(ctx context.Context) {
 			f.pendingTransactionsToStoreWG.Wait()
 			return
 		default:
-			time.Sleep(100 * time.Millisecond) //nolint:gomnd
+			time.Sleep(200 * time.Millisecond) //nolint:gomnd
 			if len(f.pendingTransactionsToStore) == 0 {
 				err := f.dbManager.StoreEmptyBlock(ctx)
 				if err != nil {
