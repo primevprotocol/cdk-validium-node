@@ -168,7 +168,7 @@ func (s *State) SetGenesis(ctx context.Context, block Block, genesis Genesis, db
 		ParentHash: ZeroHash,
 		Coinbase:   ZeroAddress,
 		Root:       root,
-		Time:       uint64(block.ReceivedAt.Unix()),
+		Time:       uint64(block.ReceivedAt.UnixMilli()),
 	}
 	rootHex := root.Hex()
 	log.Info("Genesis root ", rootHex)
